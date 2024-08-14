@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
         chatInput.value = "";
         appendMessage("あなた", userInput);
         const botResponse = chatbot.getResponse(userInput);
-        appendMessage("Bot", botResponse.message);
+        appendMessage("試験品", botResponse.message);
 
         if (botResponse.options) {
             for (const [key, value] of Object.entries(botResponse.options)) {
