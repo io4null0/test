@@ -2,84 +2,42 @@ document.addEventListener("DOMContentLoaded", () => {
     const chatBox = document.getElementById("chat-box");
     const chatInput = document.getElementById("chat-input");
 
-    const chatbot = {
-        currentScenario: "greeting",
-        scenarios: {
-            "greeting": {
-                message: "こんにちは！今日はどんなことをお手伝いできますか？",
-                options: {
-                    "1": "現在の天気を教えてください。",
-                    "2": "おすすめのレストランを教えてください。",
-                    "3": "終了する"
-                },
-                next: {
-                    "1": "weather",
-                    "2": "restaurant",
-                    "3": "end"
-                }
-            },
-            "weather": {
-                message: "現在の天気は晴れです。他にご質問はありますか？",
-                options: {
-                    "1": "はい、他の質問があります。",
-                    "2": "いいえ、これで終了します。"
-                },
-                next: {
-                    "1": "greeting",
-                    "2": "end"
-                }
-            },
-            "restaurant": {
-                message: "近くのおすすめレストランは「寿司太郎」です。他にご質問はありますか？",
-                options: {
-                    "1": "はい、他の質問があります。",
-                    "2": "いいえ、これで終了します。"
-                },
-                next: {
-                    "1": "greeting",
-                    "2": "end"
-                }
-            },
-            "end": {
-                message: "ご利用ありがとうございました。またお会いしましょう！",
-                options: {}
-            }
-        },
-        getResponse(input) {
-            const scenario = this.scenarios[this.currentScenario];
-            let response = { message: scenario.message };
-
-            if (scenario.options) {
-                response.options = scenario.options;
-                if (input in scenario.next) {
-                    this.currentScenario = scenario.next[input];
-                } else {
-                    response.message += "\n無効な選択肢です。もう一度お試しください。";
-                }
-            }
-            return response;
-        }
-    };
-
     document.getElementById("send-button").addEventListener("click", () => {
         const userInput = chatInput.value;
         chatInput.value = "";
-        appendMessage("あなた", userInput);
-        const botResponse = chatbot.getResponse(userInput);
-        appendMessage("試験品", botResponse.message);
+        appendMessage("あなた", userInput, "user");
 
-        if (botResponse.options) {
-            for (const [key, value] of Object.entries(botResponse.options)) {
-                appendMessage("試験品", `${key}: ${value}`);
-            }
-        }
-        chatBox.scrollTop = chatBox.scrollHeight;
+        fetchAIResponse(userInput).then(botResponse => {
+            appendMessage("Bot", botResponse, "bot");
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
     });
 
-    function appendMessage(sender, message) {
+    function appendMessage(sender, message, className) {
         const messageDiv = document.createElement("div");
-        messageDiv.className = "message";
+        messageDiv.className = `message ${className}`;
         messageDiv.innerText = `${sender}: ${message}`;
         chatBox.appendChild(messageDiv);
+    }
+
+    async function fetchAIResponse(userInput) {
+        const apiKey = "ZZY0QGZY3LM9PiW8Ed0M0TI0fNUaKgtc"; // ここにOpenAIのAPIキーを入力します
+        const apiUrl = "https://api.openai.com/v1/completions";
+
+        const response = await fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+                model: "text-davinci-003",
+                prompt: userInput,
+                max_tokens: 150
+            })
+        });
+
+        const data = await response.json();
+        return data.choices[0].text.trim();
     }
 });
