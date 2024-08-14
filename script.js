@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     async function fetchAIResponse(userInput) {
-        const apiKey = "ZZY0QGZY3LM9PiW8Ed0M0TI0fNUaKgtc"; // ここにOpenAIのAPIキーを入力します
+        const apiKey = "AIzaSyD0apvz-8_ZuGYGrIIDwHrauXQAKjpkC6k"; // ここにOpenAIのAPIキーを入力します
         const apiUrl = "https://api.openai.com/v1/completions";
 
         const response = await fetch(apiUrl, {
