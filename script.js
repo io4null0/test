@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (botResponse.options) {
             for (const [key, value] of Object.entries(botResponse.options)) {
-                appendMessage("Bot", `${key}: ${value}`);
+                appendMessage("試験品", `${key}: ${value}`);
             }
         }
         chatBox.scrollTop = chatBox.scrollHeight;
